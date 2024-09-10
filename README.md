@@ -18,9 +18,9 @@ Python 3.7+
 If the python package is hosted on a repository, you can install directly using:
 
 ```sh
-pip install git+https://github.com/GIT_USER_ID/GIT_REPO_ID.git
+pip install git+https://github.com/doluk/us3limsapi.py.git
 ```
-(you may need to run `pip` with root permission: `sudo pip install git+https://github.com/GIT_USER_ID/GIT_REPO_ID.git`)
+(you may need to run `pip` with root permission: `sudo pip install git+https://github.com/doluk/us3limsapi.py.git`)
 
 Then import the package:
 ```python
@@ -52,39 +52,38 @@ Please follow the [installation procedure](#installation--usage) and then run th
 ```python
 import os
 import us3api
-from us3api.rest import ApiException
+import asyncio
+import dotenv
 from pprint import pprint
+from us3api.rest import ApiException
 
-# Defining the host is optional and defaults to http://localhost:3000
+dotenv.load_dotenv()
+
 # See configuration.py for a list of all supported configuration parameters.
 configuration = us3api.Configuration(
-    host = os.environ.get('US3_LIMS_API_URL', 'http://localhost:3000')
-)
-
-# The client must configure the authentication and authorization parameters
-# in accordance with the API server security policy.
-# Examples for each auth method are provided below, use the example that
-# satisfies your auth use case.
-
-# Configure HTTP basic authorization: LIMSLogin
-configuration = us3api.Configuration(
-    username = os.environ["USERNAME"],
-    password = os.environ["PASSWORD"]
+        host=os.environ.get('US3_LIMS_API_URL'),
+        username=os.environ.get('US3_USERNAME'),
+        password=os.environ.get('US3_PASSWORD')
 )
 
 
+async def main():
+    # Enter a context with an instance of the API client
+    async with us3api.ApiClient(configuration) as api_client:
+        # Create an instance of the API class
+        api_instance = us3api.PersonApi(api_client)
+        
+        try:
+            api_response = await api_instance.persons_me_get()
+            print("The response of PersonApi->persons_me_get:\n")
+            pprint(api_response)
+        except ApiException as e:
+            print("Exception when calling PersonApi->persons_me_get: %s\n" % e)
 
-# Enter a context with an instance of the API client
-async with us3api.ApiClient(configuration) as api_client:
-    # Create an instance of the API class
-    api_instance = us3api.PersonApi(api_client)
 
-    try:
-        api_response = await api_instance.persons_me_get()
-        print("The response of PersonApi->persons_me_get:\n")
-        pprint(api_response)
-    except ApiException as e:
-        print("Exception when calling PersonApi->persons_me_get: %s\n" % e)
+if __name__ == '__main__':
+    
+    asyncio.run(main())
 
 ```
 

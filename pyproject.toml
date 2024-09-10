@@ -5,7 +5,7 @@ description = "UltraScan 3 LIMS Database Instance API"
 authors = ["OpenAPI Generator Community <team@openapitools.org>"]
 license = "NoLicense"
 readme = "README.md"
-repository = "https://github.com/GIT_USER_ID/GIT_REPO_ID"
+repository = "https://github.com/doluk/us3limsapi.py"
 keywords = ["OpenAPI", "OpenAPI-Generator", "UltraScan 3 LIMS Database Instance API"]
 include = ["us3api/py.typed"]
 
